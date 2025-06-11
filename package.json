@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "http://aseansummer.github.io/",
+  "homepage": "https://boyuan618.github.io/aseansummer/",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
