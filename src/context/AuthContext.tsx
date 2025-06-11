@@ -91,7 +91,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (name: string, password: string): Promise<boolean> => {
-    const fakeEmail = `${name}@myapp.local`;
+    const safeName = name.trim().toLowerCase().replace(/\s+/g, ''); // remove spaces, lowercase
+    const fakeEmail = `${safeName}@myapp.local`;
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email: fakeEmail,

@@ -3,12 +3,12 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/aseansummer',
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
   build: {
     sourcemap: true,  // <---- Enable this
+    rollupOptions: {       input: 'index.html',     },
   },
 });

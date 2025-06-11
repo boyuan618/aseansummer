@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Anchor, Eye, EyeOff, Compass } from 'lucide-react';
-import { supabase } from '../supabase';  // import your supabase client
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
   const [name, setName] = useState('');
@@ -10,36 +10,18 @@ function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!name || !password) {
-      setError('Please enter both pirate name and secret code.');
-      return;
-    }
+    const success = await login(name, password);
 
-    try {
-      // Supabase query: find user with username and password
-      const { data, error: fetchError } = await supabase
-        .from('Users')
-        .select('username, program, group')
-        .eq('username', name)
-        .eq('password', password)
-        .single();
-
-      if (fetchError || !data) {
-        setError('Invalid credentials. Please try again.');
-        return;
-      }
-
-      // Optionally, you can store user info in local storage or context here
-      // For example, redirecting to dashboard:
-      navigate('/dashboard', { state: { user: data } });
-
-    } catch (err) {
-      setError('Something went wrong. Please try again later.');
-      console.error(err);
+    if (success) {
+      navigate('/dashboard');
+    } else {
+      setError('Invalid pirate name or secret code.');
     }
   };
 
