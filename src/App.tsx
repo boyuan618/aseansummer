@@ -1,3 +1,4 @@
+// src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
@@ -7,9 +8,15 @@ import GameMaster from './components/GameMaster';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, initialLoading } = useAuth();
+
+  if (initialLoading) {
+    return <div className="text-white text-center p-8">Loading session...</div>;
+  }
+
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 }
+
 
 function App() {
   return (

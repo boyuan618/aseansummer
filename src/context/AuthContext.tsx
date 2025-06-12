@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { supabase } from '../supabase';  // make sure this is supabase.ts or JS with types
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '../supabase';
 
 interface User {
   id: string;
@@ -11,6 +11,7 @@ interface User {
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
+  initialLoading: boolean;
   login: (name: string, password: string) => Promise<boolean>;
   register: (name: string, programme: string, group: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -21,8 +22,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true); // 🆕
 
-  // Helper to fetch user profile from DB after login/signup
   const fetchUserProfile = async (userId: string) => {
     const { data, error } = await supabase
       .from('users')
@@ -35,63 +36,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return null;
     }
 
-    if (data) {
-      return {
-        id: data.id,
-        name: data.name,
-        programme: data.programme,
-        group: data.group_id,
-      } as User;
-    }
-
-    return null;
+    return {
+      id: data.id,
+      name: data.name,
+      programme: data.programme,
+      group: data.group_id,
+    } as User;
   };
 
-  const register = async (
-    name: string,
-    programme: string,
-    group: string,
-    password: string
-  ): Promise<boolean> => {
-    const safeName = name.trim().toLowerCase().replace(/\s+/g, ''); // remove spaces, lowercase
-    const fakeEmail = `${safeName}@myapp.local`;
+  // ✅ Wait for session restore on first load
+  useEffect(() => {
+    const restoreSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
+      if (session?.user) {
+        const profile = await fetchUserProfile(session.user.id);
+        if (profile) {
+          setUser(profile);
+          setIsAuthenticated(true);
+        }
+      }
+      setInitialLoading(false); // Done loading
+    };
 
-    const { data, error } = await supabase.auth.signUp({
-      email: fakeEmail,
-      password,
-    });
-
-    if (error || !data.user) {
-      console.error('Signup error:', error);
-      return false;
-    }
-
-    // Insert profile into users table
-    const { error: insertError } = await supabase.from('users').insert({
-      id: data.user.id,
-      name,
-      programme,
-      group_id: parseInt(group),
-    });
-
-    if (insertError) {
-      console.error('Insert profile error:', insertError);
-      return false;
-    }
-
-    setIsAuthenticated(true);
-    setUser({
-      id: data.user.id,
-      name,
-      programme,
-      group,
-    });
-
-    return true;
-  };
+    restoreSession();
+  }, []);
 
   const login = async (name: string, password: string): Promise<boolean> => {
-    const safeName = name.trim().toLowerCase().replace(/\s+/g, ''); // remove spaces, lowercase
+    const safeName = name.trim().toLowerCase().replace(/\s+/g, '');
     const fakeEmail = `${safeName}@myapp.local`;
 
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -105,15 +77,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const profile = await fetchUserProfile(data.user.id);
+    if (!profile) return false;
 
-    if (!profile) {
-      console.error('User profile not found');
+    setUser(profile);
+    setIsAuthenticated(true);
+    return true;
+  };
+
+  const register = async (name: string, programme: string, group: string, password: string): Promise<boolean> => {
+    const safeName = name.trim().toLowerCase().replace(/\s+/g, '');
+    const fakeEmail = `${safeName}@myapp.local`;
+
+    const { data, error } = await supabase.auth.signUp({
+      email: fakeEmail,
+      password,
+    });
+
+    if (error || !data.user) {
+      console.error('Signup error:', error);
       return false;
     }
 
-    setIsAuthenticated(true);
-    setUser(profile);
+    const { data: sessionData } = await supabase.auth.getSession();
+    const session = sessionData.session;
+    if (!session?.user) return false;
 
+    const { error: insertError } = await supabase.from('users').insert({
+      id: session.user.id,
+      name,
+      programme,
+      group_id: parseInt(group),
+    });
+
+    if (insertError) {
+      console.error('Insert profile error:', insertError);
+      return false;
+    }
+
+    const profile = await fetchUserProfile(session.user.id);
+    if (!profile) return false;
+
+    setUser(profile);
+    setIsAuthenticated(true);
     return true;
   };
 
@@ -124,7 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, register, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, initialLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

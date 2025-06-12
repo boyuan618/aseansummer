@@ -19,7 +19,7 @@ const activities: Activity[] = [
   {
     id: 'mermaids-lagoon',
     theme: "Mermaid's Lagoon",
-    location: "Arc TR",
+    location: "Arc",
     order: 1
   },
   {
@@ -29,15 +29,15 @@ const activities: Activity[] = [
     order: 2
   },
   {
-    id: 'cursed-compass',
-    theme: "Cursed Compass",
+    id: 'plank-panic',
+    theme: "Plank Panic",
     location: "AIA",
     order: 3
   },
   {
     id: 'plank-duel',
     theme: "Plank Duel",
-    location: "Outside Audi",
+    location: "Audi",
     order: 4
   },
   {
@@ -61,7 +61,7 @@ const activities: Activity[] = [
   {
     id: 'blazing-buccaneers',
     theme: "Blazing Buccaneers",
-    location: "CHC/Outside Can B",
+    location: "CHC",
     order: 8
   }
 ];
