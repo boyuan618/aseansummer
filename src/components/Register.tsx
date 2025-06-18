@@ -120,9 +120,22 @@ function Register() {
                 required
               >
                 <option value="">Select your group</option>
-                {Array.from({ length: 16 }, (_, i) => i + 1).map(num => (
-                  <option key={num} value={num.toString()}>Group {num}</option>
-                ))}
+                <option value="1">The Wave Warriors</option>
+                <option value="2">The Tidal Titans</option>
+                <option value="3">The Freewind Pirates</option>
+                <option value="4">The Treasure Trackers</option>
+                <option value="5">The Stormriders</option>
+                <option value="6">The Moonlit Mariners</option>
+                <option value="7">The Seafaring Legends</option>
+                <option value="8">The Compass Crusaders</option>
+                <option value="9">The Rising Tide</option>
+                <option value="10">The Majestic Raiders</option>
+                <option value="11">The Horizon Hopper</option>
+                <option value="12">The Infinite Navigators</option>
+                <option value="13">The Gallant Privateers</option>
+                <option value="14">The Celestial Sailors</option>
+                <option value="15">The Admiral's Pride</option>
+                <option value="16">The Silver Shark</option>
               </select>
             </div>
 

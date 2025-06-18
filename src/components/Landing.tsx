@@ -39,13 +39,13 @@ const activities: Activity[] = [
   {
     id: 'krakens-wrath',
     theme: "Kraken's Wrath",
-    description: "Face the legendary sea monster in this thrilling Ddjaki challenge. Test your courage and precision as you battle against the mighty tentacles of the deep. Master the ancient throwing technique to defeat the kraken and claim victory over the seas.",
+    description: "Face the legendary sea monster in this thrilling Tic Tac Toe challenge. Test your courage and precision as you battle against the mighty tentacles of the deep. Master the ancient techniques to defeat the kraken and claim victory over the seas.",
     location: "LWN",
     order: 2
   },
   {
-    id: 'cursed-compass',
-    theme: "Cursed Compass",
+    id: 'plank-panic',
+    theme: "Plank Panic",
     description: "Follow the cursed compass through the explosive Splat! challenge. Navigate through twisted paths where one wrong move could spell disaster. Only pirates with quick reflexes and steady nerves can break the ancient curse and find the hidden treasure.",
     location: "AIA",
     order: 3
@@ -145,6 +145,25 @@ const timeSlots: TimeSlot[] = [
     }
   }
 ];
+
+const groups: { [key: number]: string } = {
+  1 : "The Wave Warriors",
+  2 : "The Tidal Titans",
+  3 : "The Freewind Pirates",
+  4 : "The Treasure Trackers",
+  5 : "The Stormriders",
+  6 : "The Moonlit Mariners",
+  7 : "The Seafaring Legends",
+  8 : "The Compass Crusaders",
+  9 : "The Rising Tide",
+  10 : "The Majestic Raiders",
+  11 : "The Horizon Hopper",
+  12 : "The Infinite Navigators",
+  13 : "The Gallant Privateers",
+  14 : "The Celestial Sailors",
+  15 : "The Admiral's Pride",
+  16 : "The Silver Shark"
+}
 
 // Map location coordinates for overlays (percentage-based positioning)
 const mapLocations = {
@@ -377,7 +396,7 @@ function Landing() {
                   <Crown size={16} className="mr-1" />
                   {user?.name}
                 </p>
-                <p className="text-sm text-blue-300">{user?.programme} • Group {user?.group}</p>
+                <p className="text-sm text-blue-300">{user?.programme} • {groups[Number(user?.group)]}</p>
               </div>
               <button
                 onClick={handleLogout}
@@ -404,7 +423,7 @@ function Landing() {
 
               <h2 className="text-2xl font-bold text-yellow-400 mb-6 font-serif flex items-center">
                 <Calendar className="mr-3" size={24} />
-                Group {user?.group} Schedule
+                {groups[Number(user?.group)]} Schedule
               </h2>
 
 
@@ -463,13 +482,13 @@ function Landing() {
                       <span className="text-blue-200">Treasure Chests Found</span>
                     </div>
                     <span className="text-yellow-400 font-bold text-lg">
-                      {groupActivities.filter(ga => ga.isCompleted).length}/{groupActivities.length}
+                      {groupActivities.filter(ga => ga.isCompleted).length}/7
                     </span>
                   </div>
                   <div className="mt-2 bg-slate-600/50 rounded-full h-2">
                     <div 
                       className="bg-gradient-to-r from-yellow-400 to-yellow-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(groupActivities.filter(ga => ga.isCompleted).length / groupActivities.length) * 100}%` }}
+                      style={{ width: `${(groupActivities.filter(ga => ga.isCompleted).length / 7) * 100}%` }}
                     ></div>
                   </div>
                 </div>

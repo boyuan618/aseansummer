@@ -9,6 +9,25 @@ interface Activity {
   order: number;
 }
 
+const groups: { [key: number]: string } = {
+  1 : "The Wave Warriors",
+  2 : "The Tidal Titans",
+  3 : "The Freewind Pirates",
+  4 : "The Treasure Trackers",
+  5 : "The Stormriders",
+  6 : "The Moonlit Mariners",
+  7 : "The Seafaring Legends",
+  8 : "The Compass Crusaders",
+  9 : "The Rising Tide",
+  10 : "The Majestic Raiders",
+  11 : "The Horizon Hopper",
+  12 : "The Infinite Navigators",
+  13 : "The Gallant Privateers",
+  14 : "The Celestial Sailors",
+  15 : "The Admiral's Pride",
+  16 : "The Silver Shark"
+}
+
 interface CompletionData {
   [groupId: string]: {
     [activityId: string]: boolean;
@@ -302,7 +321,7 @@ function GameMaster() {
                 >
                   {Array.from({ length: 16 }, (_, i) => i + 1).map(num => (
                     <option key={num} value={num.toString()}>
-                      Group {num}
+                      {groups[num]}
                     </option>
                   ))}
                 </select>
@@ -338,7 +357,7 @@ function GameMaster() {
 
               <div className="pt-4 border-t border-slate-600/50">
                 <div className="text-sm text-blue-300">
-                  <p><strong>Selected:</strong> Group {selectedGroup}</p>
+                  <p><strong>Selected:</strong> {groups[Number(selectedGroup)]}</p>
                   <p><strong>Station:</strong> {activities.find(a => a.id === selectedActivity)?.theme}</p>
                   <p><strong>Location:</strong> {activities.find(a => a.id === selectedActivity)?.location}</p>
                 </div>
@@ -367,7 +386,7 @@ function GameMaster() {
                     className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/50 hover:border-slate-500/50 transition-all duration-200"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-bold text-white">Group {groupNum}</h3>
+                      <h3 className="font-bold text-white">{groups[groupNum]}</h3>
                       <button
                         onClick={() => resetGroup(groupId)}
                         className="text-red-400 hover:text-red-300 transition-colors"
