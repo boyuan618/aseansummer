@@ -14,7 +14,7 @@ const groups: { [key: number]: string } = {
   2 : "The Tidal Titans",
   3 : "The Freewind Pirates",
   4 : "The Treasure Trackers",
-  5 : "The Stormriders",
+  5 : "The Storm Riders",
   6 : "The Moonlit Mariners",
   7 : "The Seafaring Legends",
   8 : "The Compass Crusaders",
